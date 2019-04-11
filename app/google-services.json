@@ -1,0 +1,154 @@
+{
+  "project_info": {
+    "project_number": "798602366307",
+    "firebase_url": "https://bikehelp-9d921.firebaseio.com",
+    "project_id": "bikehelp-9d921",
+    "storage_bucket": "bikehelp-9d921.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:798602366307:android:283bd39babaa6cdb",
+        "android_client_info": {
+          "package_name": "com.example.bikehelp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "798602366307-i267cde6kpjoh8lfki8ua86cnfeov49c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bikehelp",
+            "certificate_hash": "9e43d809a88ac88868b0cbef010f6e232d052b34"
+          }
+        },
+        {
+          "client_id": "798602366307-48ft5n64cu30iil092mjb78me608h47n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bikehelp",
+            "certificate_hash": "f37f525e233bab3d184209191744beef656025b9"
+          }
+        },
+        {
+          "client_id": "798602366307-o0ktj1oielfp3fn9drmluita0earag0t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAgTOKX8V4PafyToD-X4t_OzAqYkKkREI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "798602366307-o0ktj1oielfp3fn9drmluita0earag0t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:798602366307:android:fc0838ec12161a9c",
+        "android_client_info": {
+          "package_name": "edu.fsu.cs.mobile.bikealert"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "798602366307-7cp4ip1tr0lmol28ijgclh7t7klsm8nj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.fsu.cs.mobile.bikealert",
+            "certificate_hash": "9e43d809a88ac88868b0cbef010f6e232d052b34"
+          }
+        },
+        {
+          "client_id": "798602366307-o0ktj1oielfp3fn9drmluita0earag0t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAgTOKX8V4PafyToD-X4t_OzAqYkKkREI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "798602366307-o0ktj1oielfp3fn9drmluita0earag0t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:798602366307:android:8032637d238946a1",
+        "android_client_info": {
+          "package_name": "edu.fsu.cs.mobile.bikeapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "798602366307-q7l16fk8a4n523uqguga1ntf4qbrhn1b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.fsu.cs.mobile.bikeapp",
+            "certificate_hash": "f37f525e233bab3d184209191744beef656025b9"
+          }
+        },
+        {
+          "client_id": "798602366307-sems2bmpv6s27c5di3tk0rfegeuqq7bl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.fsu.cs.mobile.bikeapp",
+            "certificate_hash": "f17a32927b55a6a59e2d850f13fc12ec1bcc9824"
+          }
+        },
+        {
+          "client_id": "798602366307-8ce82uu27e1r5oq2pno5dd6jh6ii68uu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.fsu.cs.mobile.bikeapp",
+            "certificate_hash": "9e43d809a88ac88868b0cbef010f6e232d052b34"
+          }
+        },
+        {
+          "client_id": "798602366307-p5hj0bb9mnbpleea9dfsmmobtn34o2pb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.fsu.cs.mobile.bikeapp",
+            "certificate_hash": "85c9f87c8511b95e8a991b2505ca387405ddd76e"
+          }
+        },
+        {
+          "client_id": "798602366307-o0ktj1oielfp3fn9drmluita0earag0t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAgTOKX8V4PafyToD-X4t_OzAqYkKkREI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "798602366307-o0ktj1oielfp3fn9drmluita0earag0t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

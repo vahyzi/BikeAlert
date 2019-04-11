@@ -1,0 +1,42 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+
+    <string-array name="bike_type">
+        <item>Select Type of Bike</item>
+        <item>Road</item>
+        <item>Mountain</item>
+        <item>Hybrid</item>
+        <item>Electric</item>
+    </string-array>
+
+    <string-array name="wheel_size">
+        <item>Select Tire Size</item>
+        <item>24"</item>
+        <item>26"</item>
+        <item>27"</item>
+        <item>27.5"</item>
+        <item>29"</item>
+        <item>700c</item>
+    </string-array>
+
+    <string-array name="valve">
+        <item>Select Type of Valve</item>
+        <item>Presta</item>
+        <item>Schrader</item>
+    </string-array>
+
+</resources>
