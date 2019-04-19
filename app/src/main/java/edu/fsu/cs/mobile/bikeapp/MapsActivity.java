@@ -190,7 +190,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                             });
                     return;
                 }
-
             }
         });
 
@@ -223,12 +222,15 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                 //switch to mapfrag
                 break;
             case R.id.bikes:
-                Intent intent = new Intent(MapsActivity.this, AddBikeInfo.class);
-                startActivity(intent);
+                Intent intent2 = new Intent(MapsActivity.this, AddBikeInfo.class);
+                startActivity(intent2);
                 break;
             case R.id.settings:
                 //switch to bikesfrag
                 break;
+            case R.id.logout:
+                Intent intent4 = new Intent(MapsActivity.this, LogoutActivity.class);
+                startActivity(intent4);
         }
 
         drawer.closeDrawer(GravityCompat.START);
