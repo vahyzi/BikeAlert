@@ -250,9 +250,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-
-
         LatLng murpheyRepair = new LatLng(30.442342, -84.292942);
         LatLng sallyRepair = new LatLng(30.445997, -84.292942);
         LatLng tullyRepair = new LatLng(30.442235, -84.302351);
@@ -283,7 +280,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                 // position on right bottom
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-                layoutParams.setMargins(0, 0, 30, 30);
+                layoutParams.setMargins(0, 0, 30, 200);
             }
 
             // ---- Initialize search bar if onMapReady ---- //
