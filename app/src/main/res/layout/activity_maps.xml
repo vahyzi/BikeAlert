@@ -17,7 +17,7 @@
         <android.support.v7.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="#9e1a1a"
+            android:background="@color/colorPrimary"
             android:id="@+id/toolbar"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -95,7 +95,7 @@
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/drawer_menu"
-        android:backgroundTint="#E4D8C2"
+        android:backgroundTint="@color/colorPrimary"
         app:itemTextColor="#fff"/>
 
 </android.support.v4.widget.DrawerLayout>
