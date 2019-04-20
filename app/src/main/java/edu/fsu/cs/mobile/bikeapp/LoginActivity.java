@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         // TODO: Check auth
         startActivityForResult(AuthUI.getInstance()
                 .createSignInIntentBuilder()
-                .setAvailableProviders(providers).build(), AUTH_SIGN_IN);
+                .setAvailableProviders(providers).setLogo(R.mipmap.ic_launcher_round).build(), AUTH_SIGN_IN);
     }
 
     @Override
