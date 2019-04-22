@@ -255,13 +255,19 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         LatLng tullyRepair = new LatLng(30.442235, -84.302351);
         mMap.addMarker(new MarkerOptions()
                 .position(murpheyRepair)
-                .title("Campus Repair Stand"));
+                .title("Campus Repair Stand")
+                .snippet("Murphey")
+                .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_build_black_24dp))));
         mMap.addMarker(new MarkerOptions()
                 .position(sallyRepair)
-                .title("Campus Repair Stand"));
+                .title("Campus Repair Stand")
+                .snippet("Salley")
+                .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_build_black_24dp))));
         mMap.addMarker(new MarkerOptions()
                 .position(tullyRepair)
-                .title("Campus Repair Stand"));
+                .title("Campus Repair Stand")
+                .snippet("Tully")
+                .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_build_black_24dp))));
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
@@ -333,17 +339,20 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         for (GeoPoint loc : markers) {
             double lat = loc.getLatitude();
             double lng = loc.getLongitude();
+
+             mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
             if (user) {
                 LatLng latLng = new LatLng(lat, lng);
                 mMap.addMarker(new MarkerOptions()
-                        .position(latLng).icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_motorcycle_black_24dp))));
+                        .title(userEmail)//should show username of the rider that marker represents
+                        .position(latLng).icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_directions_bike_black_24dp))));
             } else {
                 LatLng latLng = new LatLng(lat, lng);
                 mMap.addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .title("SEND HELP!")
-                        .icon(BitmapDescriptorFactory
-                                .defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                         .position(latLng)
+                         .title(userEmail)//should show username of rider that posted alert
+                         .snippet("Bike Info")
+                         .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_warning_black_24dp))));
 
             }
 
