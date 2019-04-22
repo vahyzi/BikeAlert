@@ -340,17 +340,22 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
             double lat = loc.getLatitude();
             double lng = loc.getLongitude();
 
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            CollectionReference riderRef = db.collection("riders");
+            FirebaseUser currUser = FirebaseAuth.getInstance().getCurrentUser();
+            String userName = currUser.getDisplayName();
+
              mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
             if (user) {
                 LatLng latLng = new LatLng(lat, lng);
                 mMap.addMarker(new MarkerOptions()
-                        .title(userEmail)//should show username of the rider that marker represents
+                        .title(userName)//should show username of the rider that marker represents
                         .position(latLng).icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_directions_bike_black_24dp))));
             } else {
                 LatLng latLng = new LatLng(lat, lng);
                 mMap.addMarker(new MarkerOptions()
                          .position(latLng)
-                         .title(userEmail)//should show username of rider that posted alert
+                         .title(userName)//should show username of rider that posted alert
                          .snippet("Bike Info")
                          .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_warning_black_24dp))));
 
