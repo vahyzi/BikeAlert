@@ -250,21 +250,24 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-
-
         LatLng murpheyRepair = new LatLng(30.442342, -84.292942);
         LatLng sallyRepair = new LatLng(30.445997, -84.292942);
         LatLng tullyRepair = new LatLng(30.442235, -84.302351);
         mMap.addMarker(new MarkerOptions()
                 .position(murpheyRepair)
-                .title("Campus Repair Stand"));
+                .title("Campus Repair Stand")
+                .snippet("Murphey")
+                .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_build_black_24dp))));
         mMap.addMarker(new MarkerOptions()
                 .position(sallyRepair)
-                .title("Campus Repair Stand"));
+                .title("Campus Repair Stand")
+                .snippet("Salley")
+                .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_build_black_24dp))));
         mMap.addMarker(new MarkerOptions()
                 .position(tullyRepair)
-                .title("Campus Repair Stand"));
+                .title("Campus Repair Stand")
+                .snippet("Tully")
+                .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_build_black_24dp))));
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
@@ -283,7 +286,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                 // position on right bottom
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-                layoutParams.setMargins(0, 0, 30, 30);
+                layoutParams.setMargins(0, 0, 30, 200);
             }
 
             // ---- Initialize search bar if onMapReady ---- //
@@ -336,17 +339,25 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         for (GeoPoint loc : markers) {
             double lat = loc.getLatitude();
             double lng = loc.getLongitude();
+
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            CollectionReference riderRef = db.collection("riders");
+            FirebaseUser currUser = FirebaseAuth.getInstance().getCurrentUser();
+            String userName = currUser.getDisplayName();
+
+            mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
             if (user) {
                 LatLng latLng = new LatLng(lat, lng);
                 mMap.addMarker(new MarkerOptions()
-                        .position(latLng).icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_motorcycle_black_24dp))));
+                        .title(userName)//should show username of the rider that marker represents
+                        .position(latLng).icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_directions_bike_black_24dp))));
             } else {
                 LatLng latLng = new LatLng(lat, lng);
                 mMap.addMarker(new MarkerOptions()
                         .position(latLng)
-                        .title("SEND HELP!")
-                        .icon(BitmapDescriptorFactory
-                                .defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                        .title(userName)//should show username of rider that posted alert
+                        .snippet("Bike Info")
+                        .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_warning_black_24dp))));
 
             }
 
@@ -387,9 +398,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
     // ---- Hidden and override with in init function with mGPS image view ---- //
     @Override
     public boolean onMyLocationButtonClick() {
+        /* Return false so that we don't consume the event and the default behavior still occurs
+         *(the camera animates to the user's current position). */
+
         //Toast.makeText(this, "Moving to current location", Toast.LENGTH_SHORT).show();
-        // Return false so that we don't consume the event and the default behavior still occurs
-        // (the camera animates to the user's current position).
         return false;
     }
 
