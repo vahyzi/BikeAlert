@@ -8,6 +8,7 @@ public class Request {
     private String UserId;
     private Timestamp timestamp;
     private GeoPoint location;
+    private String alertDesc;
 
     public String getUserId() {
         return this.UserId;
@@ -33,16 +34,26 @@ public class Request {
         this.location = location;
     }
 
+    public String getAlertDesc() {
+        return this.alertDesc;
+    }
 
-    public Request(String userId, Timestamp timestamp, GeoPoint location) {
-        this.UserId = userId;
-        this.timestamp = timestamp;
-        this.location = location;
+    public void setAlertDesc(String alertDesc) {
+        this.alertDesc = alertDesc;
     }
 
 
-    public static Request generateRequest(FirebaseUser user, GeoPoint point) {
-        return new Request(user.getEmail(), Timestamp.now(), point);
+
+    public Request(String userId, Timestamp timestamp, GeoPoint location, String alertDesc) {
+        this.UserId = userId;
+        this.timestamp = timestamp;
+        this.location = location;
+        this.alertDesc = alertDesc;
+    }
+
+
+    public static Request generateRequest(FirebaseUser user, GeoPoint point, String alertDesc) {
+        return new Request(user.getEmail(), Timestamp.now(), point, alertDesc);
     }
 
 }

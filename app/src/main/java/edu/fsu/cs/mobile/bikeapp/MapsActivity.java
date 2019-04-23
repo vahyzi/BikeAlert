@@ -81,7 +81,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapReadyCallback,
-        NavigationView.OnNavigationItemSelectedListener {
+        NavigationView.OnNavigationItemSelectedListener, RequestInitalDialog.RequestInitalDialogListener {
 
     private EditText mSearchText;
     private DrawerLayout drawer;
@@ -100,11 +100,25 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
     private static final int LOCATION_PERMISSIONS_REQUEST_CODE = 1;
     private FusedLocationProviderClient fusedLocationClient;
 
+    static final int REQUEST_INITAL_DIALOG_EXIT_ID = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        /*
+        DELETE THIS THIS
+
+        Button alertButton = findViewById(R.id.alert_button);
+
+        alertButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(REQUEST_INITAL_DIALOG_EXIT_ID);
+            }
+        });
+        */
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         /*docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -167,29 +181,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Log.d( "MADE IT TO onClick", "ONCLICK");
-                if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    Log.d( "MADE IT TO PERMISSIONS", "PERM");
-                    fusedLocationClient.getLastLocation()
-                            .addOnSuccessListener(MapsActivity.this, new OnSuccessListener<Location>() {
-                                @Override
-                                public void onSuccess(Location location) {
-                                    // Got last known location. In some rare situations this can be null.
-                                    if (location != null) {
-                                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-                                        CollectionReference reqRef = db.collection("requests");
-                                        Log.d( "MADE IT TO LOCATION", location.toString());
-
-                                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                        String email = user.getEmail();
-                                        DocumentReference docRef = reqRef.document(email);
-                                        GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
-                                        Request req = Request.generateRequest(user, point);
-                                        docRef.set(req);
-                                    }
-                                }
-                            });
-                    return;
-                }
+                RequestInitalDialog frag = new RequestInitalDialog();
+                frag.show(getSupportFragmentManager(), RequestInitalDialog.TAG);
             }
         });
 
@@ -455,5 +448,37 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         /* and Set Marker to the Map */
         MarkerOptions options = new MarkerOptions().position(latLng).title(title);
         mMap.addMarker(options);
+    }
+
+    @Override
+    public void onSend(final String alertDesc) {
+        if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Log.d( "MADE IT TO PERMISSIONS", "PERM");
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(MapsActivity.this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                CollectionReference reqRef = db.collection("requests");
+                                Log.d( "MADE IT TO LOCATION", location.toString());
+
+                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                String email = user.getEmail();
+                                DocumentReference docRef = reqRef.document(email);
+                                GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
+                                Request req = Request.generateRequest(user, point, alertDesc);
+                                docRef.set(req);
+                            }
+                        }
+                    });
+            return;
+        }
+    }
+
+    @Override
+    public void onCancel(String name) {
+
     }
 }
