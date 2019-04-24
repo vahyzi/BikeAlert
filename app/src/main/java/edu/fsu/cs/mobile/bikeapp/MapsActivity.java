@@ -14,6 +14,8 @@ import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -154,6 +156,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         TextView email = (TextView) headerView.findViewById(R.id.email);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
         CollectionReference riderRef = db.collection("riders");
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String userEmail = user.getEmail();
@@ -217,6 +221,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
             case R.id.bikes:
                 Intent intent2 = new Intent(MapsActivity.this, AddBikeInfo.class);
                 startActivity(intent2);
+                break;
+            case R.id.friends:
+                Intent intentFriends = new Intent(MapsActivity.this, FindFriends.class);
+                startActivity(intentFriends);
                 break;
             case R.id.settings:
                 //switch to bikesfrag
@@ -348,7 +356,11 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
             FirebaseUser currUser = FirebaseAuth.getInstance().getCurrentUser();
             String userName = currUser.getDisplayName();
 
+<<<<<<< HEAD
             mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
+=======
+             mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
+>>>>>>> master
             if (user) {
                 LatLng latLng = new LatLng(lat, lng);
                 mMap.addMarker(new MarkerOptions()
@@ -357,11 +369,18 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
             } else {
                 LatLng latLng = new LatLng(lat, lng);
                 mMap.addMarker(new MarkerOptions()
+<<<<<<< HEAD
                         .position(latLng)
                         .title(userName)//should show username of rider that posted alert
                         .snippet("Bike Info")
                         .alpha((float).99)
                         .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_warning_black_24dp))));
+=======
+                         .position(latLng)
+                         .title(userName)//should show username of rider that posted alert
+                         .snippet("Bike Info")
+                         .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_warning_black_24dp))));
+>>>>>>> master
 
             }
 
@@ -460,6 +479,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         MarkerOptions options = new MarkerOptions().position(latLng).title(title);
         mMap.addMarker(options);
     }
+<<<<<<< HEAD
 
     @Override
     public void onSend(final String alertDesc) {
@@ -498,3 +518,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
 
     }
 }
+=======
+}
+>>>>>>> master
