@@ -268,6 +268,12 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
             /* Remove the getLocationButton to add search bar */
             // mMap.getUiSettings().setMyLocationButtonEnabled(false);
             mMap.setOnMyLocationClickListener(this);
+            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    Log.v(TAG, String.valueOf(marker.getAlpha()));
+                }
+            });
 
             // ---- Move currentLocationButton to bottom left ---- //
             if (mapView != null && mapView.findViewById(Integer.parseInt("1")) != null){
@@ -350,6 +356,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                         .position(latLng)
                         .title(userName)//should show username of rider that posted alert
                         .snippet("Bike Info")
+                        .alpha((float).99)
                         .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_warning_black_24dp))));
 
             }
