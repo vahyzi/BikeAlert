@@ -5,11 +5,19 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.GeoPoint;
 
 public class Rider {
-    private String email;
-    private Timestamp timestamp;
-    private GeoPoint location;
+    public String email;
+    public Timestamp timestamp;
+    public GeoPoint location;
 
     private Bike bike;
+
+    public Rider() {
+
+    }
+
+    public Rider(String email) {
+        this.email = email;
+    }
 
     public Rider(String email, Timestamp timestamp, GeoPoint location, Bike bike) {
         this.email = email;
