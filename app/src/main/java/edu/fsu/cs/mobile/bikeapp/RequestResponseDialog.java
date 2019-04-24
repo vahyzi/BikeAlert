@@ -48,8 +48,8 @@ public class RequestResponseDialog extends DialogFragment {
         View rootView = inflater.inflate(R.layout.fragment_request_response_dialog, null);
         builder.setView(rootView);
         builder.setTitle("Help Response");
-        builder.setPositiveButton("Respond", mClickListener);
-        builder.setNegativeButton("Cancel", mClickListener);
+        builder.setPositiveButton("Yes", mClickListener);
+        builder.setNegativeButton("No", mClickListener);
         return builder.create();
     }
 
