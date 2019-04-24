@@ -81,7 +81,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapReadyCallback,
-        NavigationView.OnNavigationItemSelectedListener, RequestInitalDialog.RequestInitalDialogListener {
+        NavigationView.OnNavigationItemSelectedListener, RequestInitalDialog.RequestInitalDialogListener, RequestResponseDialog.RequestResponseDialogListener {
 
     private EditText mSearchText;
     private DrawerLayout drawer;
@@ -272,6 +272,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                 @Override
                 public void onInfoWindowClick(Marker marker) {
                     Log.v(TAG, String.valueOf(marker.getAlpha()));
+                    if (marker.getAlpha() == (float).99) {
+                        RequestResponseDialog frag = new RequestResponseDialog();
+                        frag.show(getSupportFragmentManager(), RequestResponseDialog.TAG);
+                    }
                 }
             });
 
@@ -482,6 +486,11 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                     });
             return;
         }
+    }
+
+    @Override
+    public void onAgree(String name) {
+
     }
 
     @Override

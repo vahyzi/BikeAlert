@@ -18,13 +18,10 @@ public class RequestResponseDialog extends DialogFragment {
     public static final String TAG = RequestResponseDialog.class.getCanonicalName();
 
     public interface RequestResponseDialogListener {
-        void onSend(String name);
+        void onAgree(String name);
 
         void onCancel(String name);
     }
-
-    private TextView mEditName;
-    private EditText descEditText;
 
     private RequestResponseDialogListener mListener;
 
@@ -48,12 +45,10 @@ public class RequestResponseDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View rootView = inflater.inflate(R.layout.fragment_my_dialog, null);
-        mEditName = rootView.findViewById(R.id.greeting);
-        descEditText = rootView.findViewById(R.id.edit_desc);
+        View rootView = inflater.inflate(R.layout.fragment_request_response_dialog, null);
         builder.setView(rootView);
-        builder.setTitle("Alert Details");
-        builder.setPositiveButton("Send", mClickListener);
+        builder.setTitle("Help Response");
+        builder.setPositiveButton("Respond", mClickListener);
         builder.setNegativeButton("Cancel", mClickListener);
         return builder.create();
     }
@@ -61,9 +56,9 @@ public class RequestResponseDialog extends DialogFragment {
     private DialogInterface.OnClickListener mClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialogInterface, int which) {
-            String requestDesc = descEditText.getText().toString();
+            String requestDesc = "yes";
             if (which == DialogInterface.BUTTON_POSITIVE) {
-                mListener.onSend(requestDesc);
+                mListener.onAgree(requestDesc);
             } else if (which == DialogInterface.BUTTON_NEGATIVE) {
                 mListener.onCancel(requestDesc);
                 dialogInterface.dismiss();
