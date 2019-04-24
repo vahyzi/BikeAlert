@@ -9,7 +9,9 @@
         <item
             android:id="@+id/bikes"
             android:title="Add Bike" />
-
+        <item
+            android:id="@+id/friends"
+            android:title="Friends" />
         <item
             android:id="@+id/settings"
             android:title="Settings" />

@@ -52,6 +52,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Intent intent2 = new Intent(MainActivity.this, AddBikeInfo.class);
                 startActivity(intent2);
                 break;
+            case R.id.friends:
+                Intent intentFriends = new Intent(MainActivity.this, FindFriends.class);
+                startActivity(intentFriends);
+                break;
             case R.id.settings:
                 //switch to bikesfrag
                 break;
