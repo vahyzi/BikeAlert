@@ -1,19 +1,28 @@
 package edu.fsu.cs.mobile.bikeapp;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AddBikeInfo extends AppCompatActivity {
 
@@ -29,6 +38,9 @@ public class AddBikeInfo extends AppCompatActivity {
     private Button Reset;
 
     boolean formerror = false;
+
+    List<String> friends = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,17 +104,47 @@ public class AddBikeInfo extends AppCompatActivity {
             String Tire = tire_width.getText().toString();
             String Valve = valve_spinner.getSelectedItem().toString();
 
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            CollectionReference riderRef = db.collection("riders");
+            final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             String email = user.getEmail();
             // OnLocationListener -
+            CollectionReference riderRef = db.collection("riders");
             DocumentReference docRef = riderRef.document(email);
             Bike bike = new Bike(Make, Model, Type, Color, Wheel, Tire, Valve);
-            Rider rider = Rider.generateRider(user, new GeoPoint(1, 1), bike);
+
+
+            final Rider rider = Rider.generateRider(user, new GeoPoint(1, 1), bike, friends);
+
+
             docRef.set(rider);
 
+
+
+            db.collection("riders")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                               @Override
+                                               public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                   if (task.isSuccessful()) {
+                                                       for (QueryDocumentSnapshot document : task.getResult()) {
+                                                           //DocumentReference emailRef = db.document(email).child(friends);
+                                                           Log.d("RidersRef", document.getId() + " => " + document.getData());
+                                                           String riderEmailStr = document.getId();
+                                                           Log.d("RidersRef2", "friendList: " + riderEmailStr);
+                                                           friends.add(riderEmailStr);
+                                                           rider.addToList(riderEmailStr);
+                                                           db.collection("riders").document(FirebaseAuth.getInstance().getCurrentUser().getEmail())
+                                                                   .update(
+                                                                           "friends", friends
+                                                                   );
+
+                                                           Log.d("RidersRef2", "friendList: " + friends.size());
+
+                                                       }
+                                                   }
+                                               }
+                                           });
             startActivity(myIntent);
         }
 

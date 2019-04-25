@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LogoutActivity"></activity>
+        <activity android:name=".FindFriends"></activity>
+        <activity android:name=".LogoutActivity" />
 
         <uses-library
             android:name="org.apache.http.legacy"
@@ -29,7 +30,7 @@
 
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MapsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
