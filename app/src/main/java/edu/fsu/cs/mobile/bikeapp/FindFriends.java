@@ -37,9 +37,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class FindFriends extends AppCompatActivity {
     private ListView riderList;
+    private List<String> friends = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +49,7 @@ public class FindFriends extends AppCompatActivity {
         setContentView(R.layout.activity_find_friends);
 
         riderList = findViewById(R.id.find_friends_recycler_list);
-        ArrayList<Rider> riderArrayList = new ArrayList<Rider>();
+        final ArrayList<Rider> riderArrayList = new ArrayList<Rider>();
         final RidersAdapter ridersAdapter = new RidersAdapter(this, riderArrayList);
         riderList.setAdapter(ridersAdapter);
 
@@ -61,6 +63,10 @@ public class FindFriends extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d("RidersRef", document.getId() + " => " + document.getData());
+                                String riderEmailStr = document.getId();
+
+                                friends.add(riderEmailStr);
+
                                 JSONObject reader = new JSONObject(document.getData());
                                 Bike bike;
                                 GeoPoint location;
@@ -83,7 +89,7 @@ public class FindFriends extends AppCompatActivity {
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
                                 }
-                                Rider rider = new Rider(document.getId(),time,location,bike);
+                                Rider rider = new Rider(document.getId(),time,location,bike, friends);
 
                                 ridersAdapter.add(rider);
                             }
