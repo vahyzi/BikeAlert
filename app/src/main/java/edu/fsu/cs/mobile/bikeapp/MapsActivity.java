@@ -203,14 +203,22 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                             Log.w(TAG, "Listen failed.", e);
                             return;
                         }
-                        ArrayList<GeoPoint> markers = new ArrayList<GeoPoint>();
                         for (DocumentSnapshot snapshot : value.getDocuments()) {
 
                             GeoPoint loc = ( (GeoPoint) snapshot.get("location"));
+                            String title = ( (String) snapshot.getId());
+                            String alertDesc = ((String) snapshot.get("alertDesc"));
+                            String snippet;
+                            if (alertDesc == null){
+                                snippet  = "Description: \nNone";
+                            } else {
+                                 snippet = "Description: \n" + alertDesc;
 
-                            markers.add(loc);
+                            }
+
+                            refreshMap(title, snippet, loc, false);
                         }
-                        refreshMap(markers, false);
+
                     }
                 });
     }
@@ -255,18 +263,15 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         LatLng tullyRepair = new LatLng(30.442235, -84.302351);
         mMap.addMarker(new MarkerOptions()
                 .position(murpheyRepair)
-                .title("Campus Repair Stand")
-                .snippet("Murphey")
+                .title("Murphey Repair Stand")
                 .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_build_black_24dp))));
         mMap.addMarker(new MarkerOptions()
                 .position(sallyRepair)
-                .title("Campus Repair Stand")
-                .snippet("Salley")
+                .title("Salley Repair Stand")
                 .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_build_black_24dp))));
         mMap.addMarker(new MarkerOptions()
                 .position(tullyRepair)
-                .title("Campus Repair Stand")
-                .snippet("Tully")
+                .title("Tully Repair Stand")
                 .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_build_black_24dp))));
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -306,12 +311,18 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                             Log.w(TAG, "Listen failed.", e);
                             return;
                         }
-                        ArrayList<GeoPoint> markers = new ArrayList<GeoPoint>();
                         for (DocumentSnapshot snapshot : value.getDocuments()) {
                             GeoPoint loc = ( (GeoPoint) snapshot.get("location"));
-                            markers.add(loc);
+                            String title = ( (String) snapshot.getId());
+                            HashMap<String, String> bikeInfo = ((HashMap<String, String>) snapshot.get("bike"));
+
+                            String bikeModel = bikeInfo.get("model");
+                            String bikeMake = bikeInfo.get("make");
+                            String wheelSize = bikeInfo.get("wheel_size");
+                            String snippet = "Currently Riding: \n Make: " + bikeMake + "\n Model: " + bikeModel + "\n Wheel Size: " + wheelSize;
+                            refreshMap(title, snippet, loc, true);
                         }
-                        refreshMap(markers, true);
+
                     }
                 });
 
@@ -334,7 +345,29 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         }
     }
 
+    private void refreshMap(String title, String snippet, GeoPoint loc, boolean user) {
+        double lat = loc.getLatitude();
+        double lng = loc.getLongitude();
 
+        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
+        if (user) {
+            LatLng latLng = new LatLng(lat, lng);
+            mMap.addMarker(new MarkerOptions()
+                    .title(title)//should show username of the rider that marker represents
+                    .snippet(snippet)
+                    .position(latLng).icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_directions_bike_black_24dp))));
+        } else {
+            LatLng latLng = new LatLng(lat, lng);
+            mMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .title(title)//should show username of rider that posted alert
+                    .snippet(snippet)
+                    .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_warning_black_24dp))));
+            }
+    }
+
+
+/*
     private void refreshMap(ArrayList<GeoPoint> markers, boolean user) {
         for (GeoPoint loc : markers) {
             double lat = loc.getLatitude();
@@ -363,6 +396,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
 
         }
     }
+    */
     private void addStatic(ArrayList<GeoPoint> markers) {
         for (GeoPoint loc : markers) {
             double lat = loc.getLatitude();

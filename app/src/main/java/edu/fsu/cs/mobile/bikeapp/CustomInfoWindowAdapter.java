@@ -35,9 +35,17 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter{
         }
         String snippet = marker.getSnippet();
         TextView tvSnippet = (TextView) view.findViewById(R.id.snippet);
-
+        TextView tvSnippet2 = (TextView) view.findViewById(R.id.snippet2);
         if(snippet != null){
-            tvSnippet.setText(snippet);
+            if (snippet.contains("\n")){
+                int index = snippet.indexOf('\n');
+                String snippet1 = snippet.substring(0, index);
+                String snippet2 = snippet.substring(index, snippet.length());
+                tvSnippet.setText(snippet1);
+                tvSnippet2.setText(snippet2);
+            }else {
+                tvSnippet.setText(snippet);
+            }
         }
     }
 
