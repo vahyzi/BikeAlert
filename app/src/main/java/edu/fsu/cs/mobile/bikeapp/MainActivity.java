@@ -1,5 +1,6 @@
 package edu.fsu.cs.mobile.bikeapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -18,6 +19,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer;
     Button openMapBtn;
+
+    private static final String EXTRA_INPUT = "input";
 
 
     @Override
@@ -72,5 +75,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
+    }
+
+    public static Intent makeIntent(Context context, String input) {
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_INPUT, input);
+
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtras(bundle);
+        return intent;
     }
 }

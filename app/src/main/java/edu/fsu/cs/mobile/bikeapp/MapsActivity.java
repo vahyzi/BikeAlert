@@ -1,11 +1,17 @@
 package edu.fsu.cs.mobile.bikeapp;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -101,6 +107,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
     };
     private static final int LOCATION_PERMISSIONS_REQUEST_CODE = 1;
     private FusedLocationProviderClient fusedLocationClient;
+
+
 
 
     @Override

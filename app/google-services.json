@@ -129,6 +129,22 @@
           }
         },
         {
+          "client_id": "798602366307-u5hjbgvuqr6aduiortrb8tcegaodfkrn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.fsu.cs.mobile.bikeapp",
+            "certificate_hash": "ba18c26aad35e752b5261a24c7d87e5518d3fe7d"
+          }
+        },
+        {
+          "client_id": "798602366307-elttujvsoebk1p20snbs9uh758uvmpnj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.fsu.cs.mobile.bikeapp",
+            "certificate_hash": "ce726055d3c9d1e53b20a7156edec833c3a9ab30"
+          }
+        },
+        {
           "client_id": "798602366307-o0ktj1oielfp3fn9drmluita0earag0t.apps.googleusercontent.com",
           "client_type": 3
         }
