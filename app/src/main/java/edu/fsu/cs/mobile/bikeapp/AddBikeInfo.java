@@ -39,7 +39,7 @@ public class AddBikeInfo extends AppCompatActivity {
 
     boolean formerror = false;
 
-    List<String> friends = new ArrayList<>();
+    List<String> invites = new ArrayList<>();
 
 
     @Override
@@ -108,18 +108,14 @@ public class AddBikeInfo extends AppCompatActivity {
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             String email = user.getEmail();
-            // OnLocationListener -
             CollectionReference riderRef = db.collection("riders");
             DocumentReference docRef = riderRef.document(email);
             Bike bike = new Bike(Make, Model, Type, Color, Wheel, Tire, Valve);
 
 
-            final Rider rider = Rider.generateRider(user, new GeoPoint(1, 1), bike, friends);
-
+            final Rider rider = Rider.generateRider(user, new GeoPoint(1, 1), bike, invites);
 
             docRef.set(rider);
-
-
 
             db.collection("riders")
                     .get()
@@ -132,15 +128,12 @@ public class AddBikeInfo extends AppCompatActivity {
                                                            Log.d("RidersRef", document.getId() + " => " + document.getData());
                                                            String riderEmailStr = document.getId();
                                                            Log.d("RidersRef2", "friendList: " + riderEmailStr);
-                                                           friends.add(riderEmailStr);
+                                                           invites.add(riderEmailStr);
                                                            rider.addToList(riderEmailStr);
                                                            db.collection("riders").document(FirebaseAuth.getInstance().getCurrentUser().getEmail())
                                                                    .update(
-                                                                           "friends", friends
+                                                                           "invites", invites
                                                                    );
-
-                                                           Log.d("RidersRef2", "friendList: " + friends.size());
-
                                                        }
                                                    }
                                                }

@@ -173,6 +173,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
 
 
         final Button button = findViewById(R.id.alert_button);
+        button.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        button.setTextColor(getResources().getColor(R.color.white));
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Log.d( "MADE IT TO onClick", "ONCLICK");
