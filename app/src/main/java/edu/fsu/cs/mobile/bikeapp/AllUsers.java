@@ -22,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class AllUsers extends AppCompatActivity {
@@ -37,9 +38,10 @@ public class AllUsers extends AppCompatActivity {
         riderList = findViewById(R.id.all_users_recycler_list);
         final ArrayList<Rider> riderArrayList = new ArrayList<Rider>();
         final RidersAdapter ridersAdapter = new RidersAdapter(this, riderArrayList);
+        final HashMap<String,Boolean> invites = new HashMap<>();
         riderList.setAdapter(ridersAdapter);
 
-                getSupportActionBar().setTitle("All Riders");
+        getSupportActionBar().setTitle("All Riders");
         // ---- Top and Bottom NavBar colors ---- //
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setNavigationBarColor(getResources().getColor(R.color.colorPrimary));
@@ -63,6 +65,7 @@ public class AllUsers extends AppCompatActivity {
                                 GeoPoint location;
                                 Timestamp time;
                                 try {
+                                    //i'll change this later, i know how to do it now
                                     JSONObject sys  = reader.getJSONObject("bike");
                                     String bikeMake = sys.getString("make");
                                     String bikeModel = sys.getString("model");
@@ -80,7 +83,7 @@ public class AllUsers extends AppCompatActivity {
                                     throw new RuntimeException(e);
                                 }
 
-                                Rider rider = new Rider(document.getId(), time, location, bike, users);
+                                Rider rider = new Rider(document.getId(), time, location, bike, invites);
                                 ridersAdapter.add(rider);
                             }
 

@@ -17,7 +17,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -28,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AddBikeInfo extends AppCompatActivity {
+public class EditBikeInfo extends AppCompatActivity {
 
     private EditText make;
     private EditText model;
@@ -95,7 +94,7 @@ public class AddBikeInfo extends AppCompatActivity {
         if (formerror) {
 
         } else {
-            Intent myIntent = new Intent(AddBikeInfo.this, MapsActivity.class);
+            Intent myIntent = new Intent(EditBikeInfo.this, MapsActivity.class);
 
             String Make = make.getText().toString();
             String Model = model.getText().toString();
@@ -114,35 +113,10 @@ public class AddBikeInfo extends AppCompatActivity {
             DocumentReference docRef = riderRef.document(email);
             Bike bike = new Bike(Make, Model, Type, Color, Wheel, Tire, Valve);
 
+            db.collection("riders").document(FirebaseAuth.getInstance().getCurrentUser().getEmail())
+                    .update("bike", bike);
 
-            final Rider rider = Rider.generateRider(user, new GeoPoint(1, 1), bike, invites);
-
-
-            docRef.set(rider);
-
-            db.collection("riders")
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    //DocumentReference emailRef = db.document(email).child(friends);
-                                    Log.d("RidersRef", document.getId() + " => " + document.getData());
-                                    String riderEmailStr = document.getId();
-                                    HashMap<String,Boolean> temp = (HashMap<String,Boolean>) document.get("invites");
-                                    temp.put(FirebaseAuth.getInstance().getCurrentUser().getEmail(),false);
-                                    db.collection("riders").document(document.getId())
-                                            .update("invites", temp);
-                                    invites.put(riderEmailStr, false);
-                                }
-
-                                db.collection("riders").document(FirebaseAuth.getInstance().getCurrentUser().getEmail())
-                                        .update("invites", invites);
-                            }
-                        }
-                    });
-            startActivity(myIntent);
+            finish();
         }
     }
 }

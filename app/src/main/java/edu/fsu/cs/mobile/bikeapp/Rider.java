@@ -1,5 +1,6 @@
 package edu.fsu.cs.mobile.bikeapp;
 
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,6 +9,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Rider implements Parcelable {
@@ -16,7 +18,7 @@ public class Rider implements Parcelable {
     public GeoPoint location;
 
 
-    public List<String> friends;
+    public HashMap<String,Boolean> invites;
 
     private Bike bike;
 
@@ -24,12 +26,12 @@ public class Rider implements Parcelable {
 
     }
 
-    public Rider(String email, Timestamp timestamp, GeoPoint location, Bike bike, List<String> friendsX) {
+    public Rider(String email, Timestamp timestamp, GeoPoint location, Bike bike, HashMap<String,Boolean> invites) {
         this.email = email;
         this.timestamp = timestamp;
         this.location = location;
         this.bike = bike;
-        this.friends = new ArrayList<String>(friendsX);
+        this.invites = new HashMap<String,Boolean>(invites);
 
     }
 
@@ -65,22 +67,11 @@ public class Rider implements Parcelable {
         this.bike = bike;
     }
 
-    public void addToList(String friend) {
-        this.friends.add(friend);
-    }
-
-    public List<String> getRiderList() {
-        return friends;
-    }
-
-    public void setRiderList(List<String> friendsList) {
-        this.friends = friendsList;
-    }
 
 
     // Testing Rider
-    public static Rider generateRider(FirebaseUser user, GeoPoint point, Bike bike, List<String> friends) {
-        return new Rider(user.getEmail(), Timestamp.now(), point, bike, friends);
+    public static Rider generateRider(FirebaseUser user, GeoPoint point, Bike bike, HashMap<String,Boolean> invites) {
+        return new Rider(user.getEmail(), Timestamp.now(), point, bike, invites);
     }
 
     @Override
@@ -99,7 +90,6 @@ public class Rider implements Parcelable {
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
         dest.writeParcelable(this.bike, flags);
-        dest.writeStringList(this.friends);
 
     }
 

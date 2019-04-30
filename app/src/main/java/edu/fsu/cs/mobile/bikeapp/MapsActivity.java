@@ -244,7 +244,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                 //switch to mapfrag
                 break;
             case R.id.bikes:
-                Intent intent2 = new Intent(MapsActivity.this, AddBikeInfo.class);
+                Intent intent2 = new Intent(MapsActivity.this, EditBikeInfo.class);
                 startActivity(intent2);
                 break;
             case R.id.users:

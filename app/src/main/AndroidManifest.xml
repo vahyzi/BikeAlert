@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UserInformation"></activity>
+        <activity android:name=".EditBikeInfo"></activity>
+        <activity android:name=".UserInformation" />
         <activity android:name=".AllUsers" />
         <activity android:name=".FindFriends" />
         <activity android:name=".LogoutActivity" />
