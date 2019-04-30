@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -67,33 +68,30 @@ public class AddBikeInfo extends AppCompatActivity {
 
     }
 
-    void checkData(){
+    void checkData() {
 
-        if(make.getText().toString().equals("")){
+        if (make.getText().toString().equals("")) {
             make.setError("Missing make");
             formerror = true;
         }
 
-        if(model.getText().toString().equals("")){
+        if (model.getText().toString().equals("")) {
             model.setError("Missing model");
             formerror = true;
         }
 
-        if(color.getText().toString().equals("")){
+        if (color.getText().toString().equals("")) {
             color.setError("Missing color");
             formerror = true;
         }
 
-        if(tire_width.getText().toString().equals("")){
+        if (tire_width.getText().toString().equals("")) {
             tire_width.setError("Missing tire width");
             formerror = true;
         }
-        if(formerror){
+        if (formerror) {
 
-        }
-
-        else
-        {
+        } else {
             Intent myIntent = new Intent(AddBikeInfo.this, MapsActivity.class);
 
             String Make = make.getText().toString();
@@ -120,35 +118,28 @@ public class AddBikeInfo extends AppCompatActivity {
             docRef.set(rider);
 
 
-
             db.collection("riders")
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                               @Override
-                                               public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                   if (task.isSuccessful()) {
-                                                       for (QueryDocumentSnapshot document : task.getResult()) {
-                                                           //DocumentReference emailRef = db.document(email).child(friends);
-                                                           Log.d("RidersRef", document.getId() + " => " + document.getData());
-                                                           String riderEmailStr = document.getId();
-                                                           Log.d("RidersRef2", "friendList: " + riderEmailStr);
-                                                           friends.add(riderEmailStr);
-                                                           rider.addToList(riderEmailStr);
-                                                           db.collection("riders").document(FirebaseAuth.getInstance().getCurrentUser().getEmail())
-                                                                   .update(
-                                                                           "friends", friends
-                                                                   );
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    //DocumentReference emailRef = db.document(email).child(friends);
+                                    Log.d("RidersRef", document.getId() + " => " + document.getData());
+                                    String riderEmailStr = document.getId();
+                                    friends.add(riderEmailStr);
+                                    rider.addToList(riderEmailStr);
+                                }
 
-                                                           Log.d("RidersRef2", "friendList: " + friends.size());
-
-                                                       }
-                                                   }
-                                               }
-                                           });
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    db.collection("riders").document(document.getId())
+                                            .update("friends", friends);
+                                }
+                            }
+                        }
+                    });
             startActivity(myIntent);
         }
-
-
-
     }
 }

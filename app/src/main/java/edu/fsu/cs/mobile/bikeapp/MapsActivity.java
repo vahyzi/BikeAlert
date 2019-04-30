@@ -37,6 +37,9 @@ import android.support.design.widget.NavigationView;
 
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -266,6 +269,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        requestLocationUpdates();
         LatLng murpheyRepair = new LatLng(30.442342, -84.292942);
         LatLng sallyRepair = new LatLng(30.445997, -84.292942);
         LatLng tullyRepair = new LatLng(30.442235, -84.302351);
@@ -497,5 +501,46 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         /* and Set Marker to the Map */
         MarkerOptions options = new MarkerOptions().position(latLng).title(title);
         mMap.addMarker(options);
+    }
+
+    private void requestLocationUpdates() {
+        LocationRequest request = new LocationRequest();
+        request.setInterval(10000);
+        request.setFastestInterval(5000);
+        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(this);
+        int permission = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String email = user.getEmail();
+        // OnLocationListener -
+        CollectionReference riderRef = db.collection("riders");
+        DocumentReference docRef = riderRef.document(email);
+
+        if (permission == PackageManager.PERMISSION_GRANTED) {
+            client.requestLocationUpdates(request, new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    Location location = locationResult.getLastLocation();
+                    double lat = (double) (location.getLatitude());
+                    double lng = (double) (location.getLongitude());
+                    Log.d("Location", lat + " " + lng);
+                    final GeoPoint point = new GeoPoint(lat, lng);
+                    db.collection("riders")
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                            db.collection("riders").document(user.getEmail())
+                                                    .update("location", point);
+                                    }
+                                }
+                            });
+                }
+            }, null);
+        }
     }
 }
