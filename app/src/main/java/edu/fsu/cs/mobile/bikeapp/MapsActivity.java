@@ -11,6 +11,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -132,6 +133,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
             }
         });*/
 
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(getResources().getColor(R.color.colorPrimary));
+        }
+
         // ---- Search Bar EditText input ---- //
         mSearchText = findViewById(R.id.input_search);
         mSearchText.setSingleLine(); // to press return key as enter key when searching
@@ -240,12 +245,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                 Intent intent2 = new Intent(MapsActivity.this, AddBikeInfo.class);
                 startActivity(intent2);
                 break;
-            case R.id.friends:
-                Intent intentFriends = new Intent(MapsActivity.this, FindFriends.class);
-                startActivity(intentFriends);
-                break;
-            case R.id.settings:
-                //switch to bikesfrag
+            case R.id.users:
+                Intent intentUsers = new Intent(MapsActivity.this, AllUsers.class);
+                startActivity(intentUsers);
                 break;
             case R.id.logout:
                 Intent intent4 = new Intent(MapsActivity.this, LogoutActivity.class);
