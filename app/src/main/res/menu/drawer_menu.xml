@@ -11,7 +11,7 @@
             android:title="Map" />
         <item
             android:id="@+id/bikes"
-            android:title="Add Bike" />
+            android:title="Edit Bike" />
         <item
             android:id="@+id/users"
             android:title="Users" />
