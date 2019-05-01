@@ -2,44 +2,39 @@ package edu.fsu.cs.mobile.bikeapp;
 
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class AllUsers extends AppCompatActivity {
 
-    private ListView riderList;
-    private List<String> users = new ArrayList<String>();
+    @BindView(R.id.all_users_recycler_list)
+    RecyclerView allUsersList;
+
+    private FirebaseFirestore db;
+    private FirestoreRecyclerAdapter adapter;
+    LinearLayoutManager linearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_users);
-
-        riderList = findViewById(R.id.all_users_recycler_list);
-        final ArrayList<Rider> riderArrayList = new ArrayList<Rider>();
-        final RidersAdapter ridersAdapter = new RidersAdapter(this, riderArrayList);
-        final HashMap<String,Boolean> invites = new HashMap<>();
-        riderList.setAdapter(ridersAdapter);
 
         getSupportActionBar().setTitle("All Riders");
         // ---- Top and Bottom NavBar colors ---- //
@@ -47,64 +42,89 @@ public class AllUsers extends AppCompatActivity {
             getWindow().setNavigationBarColor(getResources().getColor(R.color.colorPrimary));
         }
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("riders")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        ButterKnife.bind(this);
+        init();
+        getUserList();
+    }
+
+    private void init() {
+        linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        allUsersList.setLayoutManager(linearLayoutManager);
+        db = FirebaseFirestore.getInstance();
+    }
+
+    private void getUserList() {
+        // Create a reference to the cities collection
+
+        // Create a query against the collection.
+        Query query = db.collection("riders");
+
+        FirestoreRecyclerOptions<Rider> response = new FirestoreRecyclerOptions.Builder<Rider>()
+                .setQuery(query, Rider.class)
+                .build();
+
+        adapter = new FirestoreRecyclerAdapter<Rider, RiderHolder>(response) {
+            @Override
+            public void onBindViewHolder(RiderHolder holder, int position, final Rider model) {
+                holder.profilePicture.setImageResource(R.drawable.ic_android_black_24dp);
+                holder.userEmail.setText(model.getEmail());
+
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("RidersRef", document.getId() + " => " + document.getData());
-                                String riderEmailStr = document.getId();
-
-                                users.add(riderEmailStr);
-
-                                JSONObject reader = new JSONObject(document.getData());
-                                Bike bike;
-                                GeoPoint location;
-                                Timestamp time;
-                                try {
-                                    //i'll change this later, i know how to do it now
-                                    JSONObject sys  = reader.getJSONObject("bike");
-                                    String bikeMake = sys.getString("make");
-                                    String bikeModel = sys.getString("model");
-                                    String bikeType = sys.getString("type");
-                                    String bikeColor = sys.getString("color");
-                                    String bikeSize = sys.getString("wheel_size");
-                                    String bikeValve = sys.getString("valve");
-                                    String bikeWidth = sys.getString("tire_width");
-                                    location = document.getGeoPoint("location");
-                                    time = document.getTimestamp("timestamp");
-
-                                    bike = new Bike(bikeMake, bikeModel, bikeType, bikeColor, bikeSize, bikeWidth, bikeValve);
-
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
-
-                                Rider rider = new Rider(document.getId(), time, location, bike, invites);
-                                ridersAdapter.add(rider);
-                            }
-
-                        } else {
-                            Log.d("RidersRef", "Error getting documents: ", task.getException());
-                        }
+                    public void onClick(View v) {
+                        // ---- Click Listener for Users Adapter ---- //
+                        Log.d("SelectedRider", "" + model);
+                        Intent userInfoIntent = new Intent (AllUsers.this, UserInformation.class);
+                        userInfoIntent.putExtra("RiderInfo", model);
+                        startActivity(userInfoIntent);
                     }
                 });
-
-        // ---- Click Listener for Users Adapter ---- //
-        /* UserInformation Activity displays selected users details */
-        riderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Rider selectedRider = new Rider();
-                selectedRider = ridersAdapter.getItem(position);
-                Log.d("SelectedRider", "" + selectedRider);
-                Intent userInfoIntent = new Intent (AllUsers.this, UserInformation.class);
-                userInfoIntent.putExtra("RiderInfo", selectedRider);
-                startActivity(userInfoIntent);
             }
-        });
+
+            @Override
+            public RiderHolder onCreateViewHolder(ViewGroup group, int i) {
+                View view = LayoutInflater.from(group.getContext())
+                        .inflate(R.layout.users_display_layout, group, false);
+
+                return new RiderHolder(view);
+            }
+
+            @Override
+            public void onError(FirebaseFirestoreException e) {
+                Log.e("error", e.getMessage());
+            }
+        };
+
+        adapter.notifyDataSetChanged();
+        allUsersList.setAdapter(adapter);
     }
+
+    public class RiderHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.profilePicture)
+        ImageView profilePicture;
+
+        @BindView(R.id.riderEmail)
+        TextView userEmail;
+
+        public RiderHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
+
 }
+
+
+

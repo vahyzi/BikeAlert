@@ -18,7 +18,8 @@ public class Rider implements Parcelable {
     public GeoPoint location;
 
 
-    public HashMap<String,Boolean> invites;
+    private List<String> friendsList = new ArrayList<String>();
+    private List<String> pendingList = new ArrayList<String>();
 
     private Bike bike;
 
@@ -26,13 +27,13 @@ public class Rider implements Parcelable {
 
     }
 
-    public Rider(String email, Timestamp timestamp, GeoPoint location, Bike bike, HashMap<String,Boolean> invites) {
+    public Rider(String email, Timestamp timestamp, GeoPoint location, Bike bike, List<String> friendsList, List<String> pendingList) {
         this.email = email;
         this.timestamp = timestamp;
         this.location = location;
         this.bike = bike;
-        this.invites = new HashMap<String,Boolean>(invites);
-
+        this.friendsList = new ArrayList<String>(friendsList);
+        this.pendingList = new ArrayList<String>(pendingList);
     }
 
     public String getEmail() {
@@ -70,8 +71,8 @@ public class Rider implements Parcelable {
 
 
     // Testing Rider
-    public static Rider generateRider(FirebaseUser user, GeoPoint point, Bike bike, HashMap<String,Boolean> invites) {
-        return new Rider(user.getEmail(), Timestamp.now(), point, bike, invites);
+    public static Rider generateRider(FirebaseUser user, GeoPoint point, Bike bike, List<String> friendsList, List<String> pendingList) {
+        return new Rider(user.getEmail(), Timestamp.now(), point, bike, friendsList, pendingList);
     }
 
     @Override

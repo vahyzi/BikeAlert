@@ -43,7 +43,10 @@ public class AddBikeInfo extends AppCompatActivity {
 
     boolean formerror = false;
 
-    HashMap<String, Boolean> invites = new HashMap<>();
+    private List<String> friendsList = new ArrayList<String>();
+    private List<String> pendingList = new ArrayList<String>();
+
+
 
 
     @Override
@@ -115,33 +118,33 @@ public class AddBikeInfo extends AppCompatActivity {
             Bike bike = new Bike(Make, Model, Type, Color, Wheel, Tire, Valve);
 
 
-            final Rider rider = Rider.generateRider(user, new GeoPoint(1, 1), bike, invites);
+            final Rider rider = Rider.generateRider(user, new GeoPoint(1, 1), bike, friendsList, pendingList);
 
 
             docRef.set(rider);
 
-            db.collection("riders")
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    //DocumentReference emailRef = db.document(email).child(friends);
-                                    Log.d("RidersRef", document.getId() + " => " + document.getData());
-                                    String riderEmailStr = document.getId();
-                                    HashMap<String,Boolean> temp = (HashMap<String,Boolean>) document.get("invites");
-                                    temp.put(FirebaseAuth.getInstance().getCurrentUser().getEmail(),false);
-                                    db.collection("riders").document(document.getId())
-                                            .update("invites", temp);
-                                    invites.put(riderEmailStr, false);
-                                }
-
-                                db.collection("riders").document(FirebaseAuth.getInstance().getCurrentUser().getEmail())
-                                        .update("invites", invites);
-                            }
-                        }
-                    });
+//            db.collection("riders")
+//                    .get()
+//                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                            if (task.isSuccessful()) {
+//                                for (QueryDocumentSnapshot document : task.getResult()) {
+//                                    //DocumentReference emailRef = db.document(email).child(friends);
+//                                    Log.d("RidersRef", document.getId() + " => " + document.getData());
+//                                    String riderEmailStr = document.getId();
+//                                    HashMap<String,Boolean> temp = (HashMap<String,Boolean>) document.get("invites");
+//                                    temp.put(FirebaseAuth.getInstance().getCurrentUser().getEmail(),false);
+//                                    db.collection("riders").document(document.getId())
+//                                            .update("invites", temp);
+//                                    invites.put(riderEmailStr, false);
+//                                }
+//
+//                                db.collection("riders").document(FirebaseAuth.getInstance().getCurrentUser().getEmail())
+//                                        .update("invites", invites);
+//                            }
+//                        }
+//                    });
             startActivity(myIntent);
         }
     }

@@ -6,13 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".AllUsers">
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/all_users_recycler_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="0dp"
-        android:layout_marginBottom="0dp" />
+        android:divider="#00000000" />
 
 </RelativeLayout>

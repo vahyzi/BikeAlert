@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -26,6 +27,7 @@ public class UserInformation extends AppCompatActivity {
     ImageView profilePicture;
     TextView userEmail;
     Button sendFriendRequest;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +40,16 @@ public class UserInformation extends AppCompatActivity {
             getWindow().setNavigationBarColor(getResources().getColor(R.color.colorPrimary));
         }
 
+
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final String email = user.getEmail();
+        // OnLocationListener -
+        CollectionReference riderRef = db.collection("riders");
+
         Intent riderInformationIntent = getIntent();
-        Rider rider = riderInformationIntent.getParcelableExtra("RiderInfo");
+        final Rider rider = riderInformationIntent.getParcelableExtra("RiderInfo");
         userEmail = findViewById(R.id.userEmail);
         userEmail.setText(rider.getEmail());
 
@@ -49,6 +59,16 @@ public class UserInformation extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d("SendFriendRequest", "UserInformation(): Sending Request");
+
+                // take my email and add to their pending list
+                db.collection("riders").document(rider.getEmail()).
+                        update("pendingInvites", FieldValue.arrayUnion(email));
+
+                // if declined delete it from pending
+                // if accepted delete from pending and move it to friends list
+
+                // if they are already friends do not show send friend request button
+                // in AllUsers, get everyone that isnt a friend already (and ignore own email)
 
             }
         });
