@@ -11,6 +11,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -37,6 +38,9 @@ import android.support.design.widget.NavigationView;
 
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -143,6 +147,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
             }
         });*/
 
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(getResources().getColor(R.color.colorPrimary));
+        }
+
         // ---- Search Bar EditText input ---- //
         mSearchText = findViewById(R.id.input_search);
         mSearchText.setSingleLine(); // to press return key as enter key when searching
@@ -182,6 +190,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
 
 
         final Button button = findViewById(R.id.alert_button);
+        button.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        button.setTextColor(getResources().getColor(R.color.white));
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Log.d( "MADE IT TO onClick", "ONCLICK");
@@ -200,14 +210,22 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                             Log.w(TAG, "Listen failed.", e);
                             return;
                         }
-                        ArrayList<GeoPoint> markers = new ArrayList<GeoPoint>();
                         for (DocumentSnapshot snapshot : value.getDocuments()) {
 
                             GeoPoint loc = ( (GeoPoint) snapshot.get("location"));
+                            String title = ( (String) snapshot.getId());
+                            String alertDesc = ((String) snapshot.get("alertDesc"));
+                            String snippet;
+                            if (alertDesc == null){
+                                snippet  = "Description: \nNone";
+                            } else {
+                                 snippet = "Description: \n" + alertDesc;
 
-                            markers.add(loc);
+                            }
+
+                            refreshMap(title, snippet, loc, false);
                         }
-                        refreshMap(markers, false);
+
                     }
                 });
     }
@@ -219,15 +237,12 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                 //switch to mapfrag
                 break;
             case R.id.bikes:
-                Intent intent2 = new Intent(MapsActivity.this, AddBikeInfo.class);
+                Intent intent2 = new Intent(MapsActivity.this, EditBikeInfo.class);
                 startActivity(intent2);
                 break;
-            case R.id.friends:
-                Intent intentFriends = new Intent(MapsActivity.this, FindFriends.class);
-                startActivity(intentFriends);
-                break;
-            case R.id.settings:
-                //switch to bikesfrag
+            case R.id.users:
+                Intent intentUsers = new Intent(MapsActivity.this, AllUsers.class);
+                startActivity(intentUsers);
                 break;
             case R.id.logout:
                 Intent intent4 = new Intent(MapsActivity.this, LogoutActivity.class);
@@ -251,23 +266,21 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        requestLocationUpdates();
         LatLng murpheyRepair = new LatLng(30.442342, -84.292942);
         LatLng sallyRepair = new LatLng(30.445997, -84.292942);
         LatLng tullyRepair = new LatLng(30.442235, -84.302351);
         mMap.addMarker(new MarkerOptions()
                 .position(murpheyRepair)
-                .title("Campus Repair Stand")
-                .snippet("Murphey")
+                .title("Murphey Repair Stand")
                 .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_build_black_24dp))));
         mMap.addMarker(new MarkerOptions()
                 .position(sallyRepair)
-                .title("Campus Repair Stand")
-                .snippet("Salley")
+                .title("Salley Repair Stand")
                 .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_build_black_24dp))));
         mMap.addMarker(new MarkerOptions()
                 .position(tullyRepair)
-                .title("Campus Repair Stand")
-                .snippet("Tully")
+                .title("Tully Repair Stand")
                 .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_build_black_24dp))));
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -317,12 +330,18 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                             Log.w(TAG, "Listen failed.", e);
                             return;
                         }
-                        ArrayList<GeoPoint> markers = new ArrayList<GeoPoint>();
                         for (DocumentSnapshot snapshot : value.getDocuments()) {
                             GeoPoint loc = ( (GeoPoint) snapshot.get("location"));
-                            markers.add(loc);
+                            String title = ( (String) snapshot.getId());
+                            HashMap<String, String> bikeInfo = ((HashMap<String, String>) snapshot.get("bike"));
+
+                            String bikeModel = bikeInfo.get("model");
+                            String bikeMake = bikeInfo.get("make");
+                            String wheelSize = bikeInfo.get("wheel_size");
+                            String snippet = "Currently Riding: \n Make: " + bikeMake + "\n Model: " + bikeModel + "\n Wheel Size: " + wheelSize;
+                            refreshMap(title, snippet, loc, true);
                         }
-                        refreshMap(markers, true);
+
                     }
                 });
 
@@ -345,7 +364,29 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         }
     }
 
+    private void refreshMap(String title, String snippet, GeoPoint loc, boolean user) {
+        double lat = loc.getLatitude();
+        double lng = loc.getLongitude();
 
+        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
+        if (user) {
+            LatLng latLng = new LatLng(lat, lng);
+            mMap.addMarker(new MarkerOptions()
+                    .title(title)//should show username of the rider that marker represents
+                    .snippet(snippet)
+                    .position(latLng).icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_directions_bike_black_24dp))));
+        } else {
+            LatLng latLng = new LatLng(lat, lng);
+            mMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .title(title)//should show username of rider that posted alert
+                    .snippet(snippet)
+                    .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_warning_black_24dp))));
+            }
+    }
+
+
+/*
     private void refreshMap(ArrayList<GeoPoint> markers, boolean user) {
         for (GeoPoint loc : markers) {
             double lat = loc.getLatitude();
@@ -375,6 +416,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
 
         }
     }
+    */
     private void addStatic(ArrayList<GeoPoint> markers) {
         for (GeoPoint loc : markers) {
             double lat = loc.getLatitude();
@@ -503,7 +545,49 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
 
     @Override
     public void onCancel(String name) {
+    }
 
+
+
+    private void requestLocationUpdates() {
+        LocationRequest request = new LocationRequest();
+        request.setInterval(10000);
+        request.setFastestInterval(5000);
+        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(this);
+        int permission = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String email = user.getEmail();
+        // OnLocationListener -
+        CollectionReference riderRef = db.collection("riders");
+        DocumentReference docRef = riderRef.document(email);
+
+        if (permission == PackageManager.PERMISSION_GRANTED) {
+            client.requestLocationUpdates(request, new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    Location location = locationResult.getLastLocation();
+                    double lat = (double) (location.getLatitude());
+                    double lng = (double) (location.getLongitude());
+                    Log.d("Location", lat + " " + lng);
+                    final GeoPoint point = new GeoPoint(lat, lng);
+                    db.collection("riders")
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                            db.collection("riders").document(user.getEmail())
+                                                    .update("location", point);
+                                    }
+                                }
+                            });
+                }
+            }, null);
+        }
     }
 }
 
