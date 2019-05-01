@@ -1,7 +1,7 @@
 package edu.fsu.cs.mobile.bikeapp;
 
-import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,75 +16,14 @@ import android.widget.Button;
 
 import com.google.android.gms.maps.SupportMapFragment;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private DrawerLayout drawer;
-    Button openMapBtn;
-
-    private static final String EXTRA_INPUT = "input";
-
-
+public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-
-        if (savedInstanceState == null) {
-            navigationView.setCheckedItem(R.id.map);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(getResources().getColor(R.color.colorPrimary));
         }
-    }
-
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        switch (menuItem.getItemId()){
-            case R.id.map:
-                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-                startActivity(intent);
-                //switch to mapfrag
-                break;
-            case R.id.bikes:
-                Intent intent2 = new Intent(MainActivity.this, AddBikeInfo.class);
-                startActivity(intent2);
-                break;
-            case R.id.friends:
-                Intent intentFriends = new Intent(MainActivity.this, FindFriends.class);
-                startActivity(intentFriends);
-                break;
-            case R.id.settings:
-                //switch to bikesfrag
-                break;
-        }
-
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if(drawer.isDrawerOpen(GravityCompat.START)){
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    public static Intent makeIntent(Context context, String input) {
-        Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_INPUT, input);
-
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        intent.putExtras(bundle);
-        return intent;
     }
 }

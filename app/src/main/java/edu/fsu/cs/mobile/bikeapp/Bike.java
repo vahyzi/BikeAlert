@@ -12,6 +12,9 @@ public class Bike implements Parcelable {
     private String tire_width;
     private String valve;
 
+    public Bike() {
+
+    }
 
     public Bike(String make, String model, String type, String color, String wheel_size, String tire_width, String valve)
     {

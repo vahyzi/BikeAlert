@@ -83,7 +83,9 @@
                     android:id="@+id/alert_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Alert" />
+                    android:text="Alert"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginBottom="45sp"/>
                 <!--<Button-->
                     <!--android:id="@+id/current_location"-->
                     <!--android:layout_width="wrap_content"-->
