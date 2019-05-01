@@ -93,7 +93,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapReadyCallback,
-        NavigationView.OnNavigationItemSelectedListener {
+        NavigationView.OnNavigationItemSelectedListener, RequestInitalDialog.RequestInitalDialogListener, RequestResponseDialog.RequestResponseDialogListener {
 
     private EditText mSearchText;
     private DrawerLayout drawer;
@@ -112,6 +112,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
     private static final int LOCATION_PERMISSIONS_REQUEST_CODE = 1;
     private FusedLocationProviderClient fusedLocationClient;
 
+    static final int REQUEST_INITAL_DIALOG_EXIT_ID = 0;
+
 
 
 
@@ -119,6 +121,18 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        /*
+        DELETE THIS THIS
+
+        Button alertButton = findViewById(R.id.alert_button);
+
+        alertButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(REQUEST_INITAL_DIALOG_EXIT_ID);
+            }
+        });
+        */
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         /*docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -189,29 +203,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Log.d( "MADE IT TO onClick", "ONCLICK");
-                if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    Log.d( "MADE IT TO PERMISSIONS", "PERM");
-                    fusedLocationClient.getLastLocation()
-                            .addOnSuccessListener(MapsActivity.this, new OnSuccessListener<Location>() {
-                                @Override
-                                public void onSuccess(Location location) {
-                                    // Got last known location. In some rare situations this can be null.
-                                    if (location != null) {
-                                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-                                        CollectionReference reqRef = db.collection("requests");
-                                        Log.d( "MADE IT TO LOCATION", location.toString());
-
-                                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                        String email = user.getEmail();
-                                        DocumentReference docRef = reqRef.document(email);
-                                        GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
-                                        Request req = Request.generateRequest(user, point);
-                                        docRef.set(req);
-                                    }
-                                }
-                            });
-                    return;
-                }
+                RequestInitalDialog frag = new RequestInitalDialog();
+                frag.show(getSupportFragmentManager(), RequestInitalDialog.TAG);
             }
         });
 
@@ -304,6 +297,16 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
             /* Remove the getLocationButton to add search bar */
             // mMap.getUiSettings().setMyLocationButtonEnabled(false);
             mMap.setOnMyLocationClickListener(this);
+            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    Log.v(TAG, String.valueOf(marker.getAlpha()));
+                    if (marker.getAlpha() == (float).99) {
+                        RequestResponseDialog frag = new RequestResponseDialog();
+                        frag.show(getSupportFragmentManager(), RequestResponseDialog.TAG);
+                    }
+                }
+            });
 
             // ---- Move currentLocationButton to bottom left ---- //
             if (mapView != null && mapView.findViewById(Integer.parseInt("1")) != null){
@@ -402,7 +405,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
             FirebaseUser currUser = FirebaseAuth.getInstance().getCurrentUser();
             String userName = currUser.getDisplayName();
 
-             mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
+            mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
             if (user) {
                 LatLng latLng = new LatLng(lat, lng);
                 mMap.addMarker(new MarkerOptions()
@@ -411,10 +414,11 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
             } else {
                 LatLng latLng = new LatLng(lat, lng);
                 mMap.addMarker(new MarkerOptions()
-                         .position(latLng)
-                         .title(userName)//should show username of rider that posted alert
-                         .snippet("Bike Info")
-                         .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_warning_black_24dp))));
+                        .position(latLng)
+                        .title(userName)//should show username of rider that posted alert
+                        .snippet("Bike Info")
+                        .alpha((float).99)
+                        .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.ic_warning_black_24dp))));
 
             }
 
@@ -433,8 +437,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
     }
 
     /*
-    * Sweet angel of stack overflow
-    * https://stackoverflow.com/questions/10111073/how-to-get-a-bitmap-from-a-drawable-defined-in-a-xml
+     * Sweet angel of stack overflow
+     * https://stackoverflow.com/questions/10111073/how-to-get-a-bitmap-from-a-drawable-defined-in-a-xml
      */
     private Bitmap getBitmap(int drawableRes) {
         Drawable drawable = getResources().getDrawable(drawableRes);
@@ -515,6 +519,44 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         mMap.addMarker(options);
     }
 
+    @Override
+    public void onSend(final String alertDesc) {
+        if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Log.d( "MADE IT TO PERMISSIONS", "PERM");
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(MapsActivity.this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                CollectionReference reqRef = db.collection("requests");
+                                Log.d( "MADE IT TO LOCATION", location.toString());
+
+                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                String email = user.getEmail();
+                                DocumentReference docRef = reqRef.document(email);
+                                GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
+                                Request req = Request.generateRequest(user, point, alertDesc);
+                                docRef.set(req);
+                            }
+                        }
+                    });
+            return;
+        }
+    }
+
+    @Override
+    public void onAgree(String name) {
+
+    }
+
+    @Override
+    public void onCancel(String name) {
+    }
+
+
+
     private void requestLocationUpdates() {
         LocationRequest request = new LocationRequest();
         request.setInterval(10000);
@@ -556,3 +598,4 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         }
     }
 }
+
