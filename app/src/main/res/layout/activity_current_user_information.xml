@@ -5,14 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    tools:context=".UserInformation">
+    tools:context=".CurrentUserInformation">
 
     <ImageView
         android:id="@+id/currentUserProfilePicture"
         android:layout_width="85dp"
         android:layout_height="85dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="506dp"
         android:src="@drawable/ic_android_black_24dp"
         app:layout_constraintBottom_toTopOf="@+id/currentUserEmail"
         app:layout_constraintEnd_toStartOf="parent"
@@ -23,9 +21,24 @@
         android:id="@+id/currentUserEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
         android:text="Email"
         app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/pending_friends_recycler_list"
         app:layout_constraintTop_toBottomOf="@+id/currentUserProfilePicture" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/pending_friends_recycler_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="43dp"
+        android:divider="#00000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/currentUserEmail"/>
+
+
 </android.support.constraint.ConstraintLayout>

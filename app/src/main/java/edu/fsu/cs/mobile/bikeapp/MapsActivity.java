@@ -241,20 +241,23 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()){
-            case R.id.map:
-                //switch to mapfrag
+            // ---- Opens Current Account Information ---- //
+            /* Uses same layout as AllUsers */
+            case R.id.currentAccountInfo:
+                Intent intentCurrentAcount = new Intent(MapsActivity.this, CurrentUserInformation.class);
+                startActivity(intentCurrentAcount);
                 break;
             case R.id.bikes:
-                Intent intent2 = new Intent(MapsActivity.this, EditBikeInfo.class);
-                startActivity(intent2);
+                Intent intentBikeEdit = new Intent(MapsActivity.this, EditBikeInfo.class);
+                startActivity(intentBikeEdit);
                 break;
             case R.id.users:
                 Intent intentUsers = new Intent(MapsActivity.this, AllUsers.class);
                 startActivity(intentUsers);
                 break;
             case R.id.logout:
-                Intent intent4 = new Intent(MapsActivity.this, LogoutActivity.class);
-                startActivity(intent4);
+                Intent intentLogout = new Intent(MapsActivity.this, LogoutActivity.class);
+                startActivity(intentLogout);
         }
 
         drawer.closeDrawer(GravityCompat.START);
