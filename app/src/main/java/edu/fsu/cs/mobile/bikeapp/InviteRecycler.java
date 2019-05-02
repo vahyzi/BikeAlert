@@ -2,6 +2,8 @@ package edu.fsu.cs.mobile.bikeapp;
 
 import android.content.Context;
 import android.database.Observable;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,10 +14,14 @@ import android.widget.Button;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
 
@@ -54,6 +60,38 @@ public class InviteRecycler extends RecyclerView.Adapter<InviteRecycler.ViewHold
                         update("friendsList", FieldValue.arrayUnion(mPendingInvites.get(position)));
                 db.collection("riders").document(mPendingInvites.get(position)).
                         update("friendsList", FieldValue.arrayUnion(currentUser.getEmail()));
+                final String email = mPendingInvites.get(position);
+
+                mPendingInvites.remove(position);
+
+                db.collection("riders").document(currentUser.getEmail()).
+                        update("pendingInvites", mPendingInvites);
+
+                final FirebaseFirestore db = FirebaseFirestore.getInstance();
+                final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                db.collection("riders")
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        if(email.equals(document.getId())) {
+                                            List<String> temp = (List<String>) document.get("pendingInvites");
+                                            temp.remove(currentUser.getEmail());
+                                            db.collection("riders").document(document.getId()).
+                                                    update("pendingInvites", temp);
+
+                                        }
+                                    }
+                                }
+                            }
+                        });
+
+
+                db.collection("riders").document(email).
+                        update("pendingInvites", FieldValue.arrayUnion(currentUser.getEmail()));
+
             }
         });
 
