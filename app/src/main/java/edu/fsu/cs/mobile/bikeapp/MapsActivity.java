@@ -247,6 +247,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                 Intent intentCurrentAcount = new Intent(MapsActivity.this, CurrentUserInformation.class);
                 startActivity(intentCurrentAcount);
                 break;
+            case R.id.friends:
+                Intent intentFriends = new Intent(MapsActivity.this, FindFriends.class);
+                startActivity(intentFriends);
+                break;
             case R.id.bikes:
                 Intent intentBikeEdit = new Intent(MapsActivity.this, EditBikeInfo.class);
                 startActivity(intentBikeEdit);

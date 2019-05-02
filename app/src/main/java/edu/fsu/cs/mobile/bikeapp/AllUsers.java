@@ -1,5 +1,6 @@
 package edu.fsu.cs.mobile.bikeapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -46,6 +47,11 @@ public class AllUsers extends AppCompatActivity {
         ButterKnife.bind(this);
         init();
         getUserList();
+    }
+
+    public Context getUsersContext() {
+        Context context = getApplicationContext();
+        return  context;
     }
 
     private void init() {
