@@ -1,5 +1,6 @@
 package edu.fsu.cs.mobile.bikeapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
@@ -47,6 +49,11 @@ public class AllUsers extends AppCompatActivity {
         getUserList();
     }
 
+    public Context getUsersContext() {
+        Context context = getApplicationContext();
+        return  context;
+    }
+
     private void init() {
         linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         allUsersList.setLayoutManager(linearLayoutManager);
@@ -57,6 +64,7 @@ public class AllUsers extends AppCompatActivity {
         // Create a reference to the cities collection
 
         // Create a query against the collection.
+
         Query query = db.collection("riders");
 
         FirestoreRecyclerOptions<Rider> response = new FirestoreRecyclerOptions.Builder<Rider>()
@@ -66,19 +74,25 @@ public class AllUsers extends AppCompatActivity {
         adapter = new FirestoreRecyclerAdapter<Rider, RiderHolder>(response) {
             @Override
             public void onBindViewHolder(RiderHolder holder, int position, final Rider model) {
-                holder.profilePicture.setImageResource(R.drawable.ic_android_black_24dp);
-                holder.userEmail.setText(model.getEmail());
 
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // ---- Click Listener for Users Adapter ---- //
-                        Log.d("SelectedRider", "" + model);
-                        Intent userInfoIntent = new Intent (AllUsers.this, UserInformation.class);
-                        userInfoIntent.putExtra("RiderInfo", model);
-                        startActivity(userInfoIntent);
+                    holder.profilePicture.setImageResource(R.drawable.ic_android_black_24dp);
+                    if(!model.getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                        holder.userEmail.setText(model.getEmail());
+                        holder.itemView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // ---- Click Listener for Users Adapter ---- //
+                                Log.d("SelectedRider", "" + model);
+                                Intent userInfoIntent = new Intent(AllUsers.this, UserInformation.class);
+                                userInfoIntent.putExtra("RiderInfo", model);
+                                startActivity(userInfoIntent);
+                            }
+                        });
                     }
-                });
+                    else
+                    {
+                        holder.userEmail.setText("You");
+                    }
             }
 
             @Override

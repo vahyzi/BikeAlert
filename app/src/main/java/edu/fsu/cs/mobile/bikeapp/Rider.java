@@ -68,6 +68,8 @@ public class Rider implements Parcelable {
         this.bike = bike;
     }
 
+    public List<String> getPendingList(){ return pendingList; }
+
 
 
     // Testing Rider
