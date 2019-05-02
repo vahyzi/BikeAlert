@@ -41,7 +41,6 @@ public class CurrentUserInformation extends AppCompatActivity{
     InviteRecycler pendingFriendsList;
 
     private FirebaseFirestore db;
-    //private FirestoreRecyclerAdapter adapter;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     LinearLayoutManager linearLayoutManager;
@@ -64,14 +63,13 @@ public class CurrentUserInformation extends AppCompatActivity{
 
         ButterKnife.bind(this);
         getUserList();
+
     }
 
     private void getUserList() {
         // Create a query against the collection to see pending invites
-
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final String email = user.getEmail();
         // OnLocationListener -
@@ -82,9 +80,6 @@ public class CurrentUserInformation extends AppCompatActivity{
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
-
-                                    //DocumentReference emailRef = db.document(email).child(friends);
-
                                     String riderEmailStr = document.getId();
                                     if(user.getEmail().equals(document.getId())) {
                                         temp = (List<String>) document.get("pendingInvites");
@@ -93,84 +88,11 @@ public class CurrentUserInformation extends AppCompatActivity{
                                         pendingFriendsList = new InviteRecycler(CurrentUserInformation.this, temp);
                                         recyclerView.setAdapter(pendingFriendsList);
                                     }
-
                                 }
                             }
                         }
                     });
-
-
-
-
-
-
-
-//        Query query = db.collection("riders").document(user.getEmail()).collection("pendingInvites");
-//                //whereEqualTo(user.getEmail(), "pendingInvites").orderBy("pendingInvites", Query.Direction.ASCENDING);
-//
-//        FirestoreRecyclerOptions<Rider> response = new FirestoreRecyclerOptions.Builder<Rider>()
-//                .setQuery(query, Rider.class)
-//                .build();
-//
-//        adapter = new FirestoreRecyclerAdapter<Rider, CurrentUserInformation.RiderHolder>(response) {
-//            @Override
-//            public void onBindViewHolder(CurrentUserInformation.RiderHolder holder, int position, final Rider model) {
-//                holder.profilePicture.setImageResource(R.drawable.ic_android_black_24dp);
-//                holder.userEmail.setText(model.getEmail());
-//
-//                holder.itemView.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        // ---- Click Listener for Users Adapter ---- //
-//                        Log.d("SelectedRider", "" + model);
-//                        Intent userInfoIntent = new Intent (CurrentUserInformation.this, UserInformation.class);
-//                        userInfoIntent.putExtra("RiderInfo", model);
-//                        startActivity(userInfoIntent);
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public CurrentUserInformation.RiderHolder onCreateViewHolder(ViewGroup group, int i) {
-//                View view = LayoutInflater.from(group.getContext())
-//                        .inflate(R.layout.users_display_layout, group, false);
-//
-//                return new CurrentUserInformation.RiderHolder(view);
-//            }
-//
-//            @Override
-//            public void onError(FirebaseFirestoreException e) {
-//                Log.e("error", e.getMessage());
-//            }
-//        };
-//
-//        adapter.notifyDataSetChanged();
-//        pendingFriendsList.setAdapter(adapter);
     }
 
-    public class RiderHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.profilePicture)
-        ImageView profilePicture;
-
-        @BindView(R.id.riderEmail)
-        TextView userEmail;
-
-        public RiderHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-    }
-
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        adapter.startListening();
-//    }
-//
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        adapter.stopListening();
-//    }
 
 }
