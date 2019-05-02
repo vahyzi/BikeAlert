@@ -15,7 +15,8 @@
         app:layout_constraintBottom_toTopOf="@+id/currentUserEmail"
         app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.53" />
 
     <TextView
         android:id="@+id/currentUserEmail"
@@ -24,21 +25,32 @@
         android:text="Email"
         app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/my_recycler_view"
+        app:layout_constraintBottom_toTopOf="@id/pendingInvitesTitle"
         app:layout_constraintTop_toBottomOf="@+id/currentUserProfilePicture" />
+
+    <TextView
+        android:id="@+id/pendingInvitesTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pending Invites"
+        android:gravity="center_horizontal"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_marginTop="50dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/my_recycler_view"
+        app:layout_constraintTop_toBottomOf="@id/currentUserEmail"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="43dp"
-        android:divider="#00000000"
+        android:backgroundTint="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/currentUserEmail"/>
+        app:layout_constraintTop_toBottomOf="@id/currentUserEmail"
+        app:layout_constraintVertical_bias="0.502" />
 
 
 </android.support.constraint.ConstraintLayout>

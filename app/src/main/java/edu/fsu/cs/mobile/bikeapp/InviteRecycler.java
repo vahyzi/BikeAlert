@@ -1,12 +1,21 @@
 package edu.fsu.cs.mobile.bikeapp;
 
 import android.content.Context;
+import android.database.Observable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
@@ -15,6 +24,9 @@ public class InviteRecycler extends RecyclerView.Adapter<InviteRecycler.ViewHold
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
     private List<String> mPendingInvites;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+    View view;
 
     // data is passed into the constructor
     InviteRecycler(Context context,  List<String> pendingInvites) {
@@ -25,15 +37,32 @@ public class InviteRecycler extends RecyclerView.Adapter<InviteRecycler.ViewHold
     // inflates the row layout from xml when needed
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.recycler_row, parent, false);
+        view = mInflater.inflate(R.layout.recycler_row, parent, false);
         return new ViewHolder(view);
     }
 
     // binds the data to the TextView in each row
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         Log.d("Test",mPendingInvites.get(position));
         holder.myTextView.setText(mPendingInvites.get(position));
+
+        holder.acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                db.collection("riders").document(currentUser.getEmail()).
+                        update("friendsList", FieldValue.arrayUnion(mPendingInvites.get(position)));
+                db.collection("riders").document(mPendingInvites.get(position)).
+                        update("friendsList", FieldValue.arrayUnion(currentUser.getEmail()));
+            }
+        });
+
+        holder.rejectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     // total number of rows
@@ -46,10 +75,14 @@ public class InviteRecycler extends RecyclerView.Adapter<InviteRecycler.ViewHold
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView myTextView;
+        public Button acceptButton;
+        public Button rejectButton;
 
         ViewHolder(View itemView) {
             super(itemView);
             myTextView = itemView.findViewById(R.id.inviteName);
+            acceptButton = itemView.findViewById(R.id.accept_button);
+            rejectButton = itemView.findViewById(R.id.reject_button);
             itemView.setOnClickListener(this);
         }
 
