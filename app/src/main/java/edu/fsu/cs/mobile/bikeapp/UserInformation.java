@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -24,10 +25,16 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UserInformation extends AppCompatActivity {
     ImageView profilePicture;
     TextView userEmail;
     Button sendFriendRequest;
+    Boolean flag;
+    List<String> friends = new ArrayList<String>();;
+    List<String> invites = new ArrayList<String>();;
 
 
     @Override
@@ -65,14 +72,47 @@ public class UserInformation extends AppCompatActivity {
                 db.collection("riders").document(rider.getEmail()).
                         update("pendingInvites", FieldValue.arrayUnion(email));
 
+                Toast toast = Toast.makeText(getApplicationContext(), "Friend request sent!", Toast.LENGTH_LONG);
+                toast.show();
+
                 // if declined delete it from pending
                 // if accepted delete from pending and move it to friends list
 
                 // if they are already friends do not show send friend request button
                 // in AllUsers, get everyone that isnt a friend already (and ignore own email)
 
+
             }
         });
+
+        db.collection("riders")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String riderEmailStr = document.getId();
+                                if(rider.getEmail().equals(document.getId())) {
+                                    friends = (List<String>) document.get("friendsList");
+                                    invites = (List<String>) document.get("pendingInvites");
+                                    if(friends != null)
+                                    {
+                                        if(friends.contains(email)) {
+                                            sendFriendRequest.setVisibility(View.INVISIBLE);
+                                        }
+                                    }
+                                    if(invites != null)
+                                    {
+                                        if(invites.contains(email)) {
+                                            sendFriendRequest.setVisibility(View.INVISIBLE);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
 
     }
 }

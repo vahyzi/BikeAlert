@@ -62,11 +62,11 @@ public class CurrentUserInformation extends AppCompatActivity{
         }
 
         ButterKnife.bind(this);
-        getUserList();
+        getCurrentUser();
 
     }
 
-    private void getUserList() {
+    private void getCurrentUser() {
         // Create a query against the collection to see pending invites
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
