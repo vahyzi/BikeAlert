@@ -82,7 +82,7 @@
         android:layout_below="@id/make"
         android:layout_alignParentRight="true"
         android:layout_marginTop="423dp"
-        android:layout_marginRight="73dp"
+        android:layout_marginRight="30dp"
         android:text="Submit" />
 
     <Button

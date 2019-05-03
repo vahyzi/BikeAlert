@@ -27,6 +27,9 @@ import com.google.firebase.messaging.RemoteMessage;
 import static com.firebase.ui.auth.AuthUI.TAG;
 
 public class MyFirebaseMessagineService extends FirebaseMessagingService {
+
+    private String TAG = "MyFireBaseMessagingService";
+
     public MyFirebaseMessagineService() {
     }
 
@@ -94,11 +97,10 @@ public class MyFirebaseMessagineService extends FirebaseMessagingService {
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        /*/*//*/
-        // add deviceID Token to user in database
-        /////////////////////////////////////////
 
-        /*
+        // add deviceID Token to user in database
+
+/*
 
         usersRef.addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
             @Override
@@ -130,8 +132,8 @@ public class MyFirebaseMessagineService extends FirebaseMessagingService {
                     }
 
                 }
-        */
 
+*/
     }
 
 }

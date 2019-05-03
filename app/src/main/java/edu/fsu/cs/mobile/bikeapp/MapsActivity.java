@@ -116,23 +116,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
 
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        /*
-        DELETE THIS THIS
-
-        Button alertButton = findViewById(R.id.alert_button);
-
-        alertButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDialog(REQUEST_INITAL_DIALOG_EXIT_ID);
-            }
-        });
-        */
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         /*docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
