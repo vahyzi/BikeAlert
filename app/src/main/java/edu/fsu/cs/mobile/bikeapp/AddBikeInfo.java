@@ -70,7 +70,25 @@ public class AddBikeInfo extends AppCompatActivity {
                 checkData();
             }
         });
+        
+        Reset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resetData();
+            }
+        });
 
+
+    }
+
+    private void resetData() {
+        make.setText("");
+        model.setText("");
+        type.setSelection(0);
+        color.setText("");
+        wheel_size.setSelection(0);
+        tire_width.setText("");
+        valve_spinner.setSelection(0);
 
     }
 
