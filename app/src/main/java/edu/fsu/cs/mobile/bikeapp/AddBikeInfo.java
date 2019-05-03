@@ -46,9 +46,6 @@ public class AddBikeInfo extends AppCompatActivity {
     private List<String> friendsList = new ArrayList<String>();
     private List<String> pendingList = new ArrayList<String>();
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
